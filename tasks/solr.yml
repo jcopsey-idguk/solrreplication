@@ -17,6 +17,8 @@
 
   - file: path="{{ solr_dir }}" state="directory" owner="{{ solr_user }}" group="{{ solr_group }}" mode="0774"
 
+  - apt: name="daemon"
+
   - template: src="templates/solr.init.d.j2" dest="/etc/init.d/solr" owner="root" group="root" mode="0751"
 
   - service: name="solr" enabled="yes"
