@@ -2,6 +2,8 @@
   - name: Create opt directory
     file: path="/opt/" state="directory" mode="0777"
 
+  - file: path="{{ solr_logs }}" state="directory" owner="{{ solr_user }}" group="{{ solr_group }}" mode="0774" recurse="true"
+
   - group: name="{{ solr_group }}" system=true
 
   - user: name="{{ solr_user }}" group="{{ solr_group }}" system=true shell="/bin/false" createhome=false
