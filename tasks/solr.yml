@@ -25,4 +25,4 @@
 
   - service: name="solr" enabled="yes"
 
-  - service: name="solr" state="started"
+  - service: name="solr" state="restarted"
