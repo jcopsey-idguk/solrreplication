@@ -24,7 +24,7 @@
   when: javaVersion.failed is defined and javaVersion.failed and javaVersion.msg.find('No such file or directory') == -1
 
 - name: Add repo for oracle java
-  apt_repository: repo='ppa:webupd7team/java' update_cache=true
+  apt_repository: repo='ppa:webupd8team/java' update_cache=true
   when: has_java == false
 
 - name: auto accept oracle jdk license
