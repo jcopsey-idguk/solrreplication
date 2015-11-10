@@ -1,19 +1,10 @@
 #!/bin/sh
 
-# Prerequisites:
-# 1. Solr needs to be installed at /usr/local/solr/example
-# 2. daemon needs to be installed
-# 3. Script needs to be executed by root
-
-# This script will launch Solr in a mode that will automatically respawn if it
-# crashes. Output will be sent to /var/log/solr/solr.log. A PID file will be
-# created in the standard location.
-
 start () {
     echo -n "Starting solr..."
 
     # Start daemon
-    daemon --user="{{ solr_user }}:{{ solr_group }}" --chdir="{{ solr_dir }}" --umask="0774" --respawn --output="{{ solr_logs }}/out.log" --name=solr --verbose --command="java -classpath '{{ solr_dir }}/Tomcat/bin/bootstrap.jar;{{ solr_dir }}/Tomcat/bin/tomcat-juli.jar' -Xmx1560m -Xms1560m -Xss4m -XX:PermSize=24m -Dcatalina.home='{{ solr_dir }}/Tomcat' -Dsolr.solr.home={{ solr_dir }}/Solr/cores -Dcatalina.logs={{ solr_logs }} -Djava.util.logging.config.file='{{ solr_dir }}/Tomcat/conf/logging.properties' -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs='{{ solr_dir }}/Tomcat/endorsed' --StartClass=org.apache.catalina.startup.Bootstrap --StartParams=start --StopClass=org.apache.catalina.startup.Bootstrap --StopParams=stop --LogPath={{ solr_logs }} --LogPrefix='commons-daemon'"
+    daemon --user="{{ solr_user }}:{{ solr_group }}" --chdir="{{ solr_dir }}" --umask="0774" --respawn --output="{{ solr_logs }}/out.log" --name=solr --verbose --command="java -verbose -classpath {{ solr_dir }}/Tomcat/bin/bootstrap.jar:{{ solr_dir }}/Tomcat/bin/tomcat-juli.jar -Xmx1560m -Xms1560m -Xss4m -XX:PermSize=24m -Dcatalina.home=\"{{ solr_dir }}/Tomcat\" -Dsolr.solr.home={{ solr_dir }}/Solr/cores -Dcatalina.logs={{ solr_logs }} -Djava.util.logging.config.file=\"{{ solr_dir }}/Tomcat/conf/logging.properties\" -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=\"{{ solr_dir }}/Tomcat/endorsed\" org.apache.catalina.startup.Bootstrap
 
     RETVAL=$?
     if [ $RETVAL = 0 ]
@@ -29,7 +20,7 @@ stop () {
     # Stop daemon
     echo -n "Stopping solr..."
 
-    daemon --stop --name=solr  --verbose
+    daemon --stop --name=solr --verbose --user="{{ solr_user }}:{{ solr_group }}" --chdir="{{ solr_dir }}" --umask="0774"
     RETVAL=$?
 
     if [ $RETVAL = 0 ]
@@ -43,13 +34,13 @@ stop () {
 
 
 restart () {
-    daemon --restart --name=solr  --verbose
+    daemon --restart --name=solr --verbose --user="{{ solr_user }}:{{ solr_group }}" --chdir="{{ solr_dir }}" --umask="0774"
 }
 
 
 status () {
     # Report on the status of the daemon
-    daemon --running --verbose --name=solr
+    daemon --running --verbose --name=solr --user="{{ solr_user }}:{{ solr_group }}" --chdir="{{ solr_dir }}" --umask="0774"
     return $?
 }
 
