@@ -1,0 +1,37 @@
+---
+- name: setup java facts
+  set_fact:
+   has_java: null
+
+- name: capture java version installed (or lack of)
+  command: "java -version"
+  ignore_errors: true
+  register: javaVersion
+
+- debug: var=javaVersion
+
+- name: set has_java to false
+  set_fact: has_java=false
+  when: javaVersion.failed is defined and javaVersion.failed and javaVersion.msg.find('No such file or directory') != -1
+
+- name: set has_java to true
+  set_fact: has_java=true
+  when: (not (javaVersion.failed is defined)) and javaVersion.stderr.find('java version "') == 0
+
+- debug: var=has_java
+
+- fail: msg="unexpected error when getting java version"
+  when: javaVersion.failed is defined and javaVersion.failed and javaVersion.msg.find('No such file or directory') == -1
+
+- name: Add repo for oracle java
+  apt_repository: repo='ppa:webupd8team/java' update_cache=true
+  when: has_java == false
+
+- name: auto accept oracle jdk license
+  shell: echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+  sudo: yes
+  when: has_java == false
+
+- name: Install java
+  apt: name='oracle-java8-installer'
+  when: has_java == false

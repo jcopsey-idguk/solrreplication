@@ -1,0 +1,12 @@
+---
+  - apt: name="ufw"
+
+  - ufw: rule="allow" name="OpenSSH"
+
+  - ufw: rule="allow" to_port="{{ solr_port }}" proto="tcp"
+
+  - ufw: rule="allow" delete="true" #delete any rule allowing all
+
+  - ufw: direction="incoming" policy="deny"
+
+  - ufw: state="enabled" logging="on"

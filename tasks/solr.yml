@@ -1,0 +1,31 @@
+---
+  - name: Create opt directory
+    file: path="/opt/" state="directory" mode="0777"
+
+  - group: name="{{ solr_group }}" system=true
+
+  - user: name="{{ solr_user }}" group="{{ solr_group }}" system=true shell="/bin/false" createhome=false
+
+  - name: Check if solr directory exists
+    stat: path="{{ solr_dir }}"
+    register: solr_dir_check
+
+  - debug: var=solr_dir_check
+
+  - file: path="{{ solr_dir }}" state="directory"
+    when: (not solr_dir_check.stat.exists)
+
+  - apt: name="subversion"
+    when: (not solr_dir_check.stat.exists)
+
+  - name: Get solr files from svn
+    subversion: dest="{{ solr_dir }}" repo="{{ idguk_solr_repo }}" username="{{ idguk_solr_repo_username }}" password="{{ idguk_solr_repo_password }}" export="true"
+    when: (not solr_dir_check.stat.exists)
+
+  - apt: name="subversion" state="absent"
+    when: (not solr_dir_check.stat.exists)
+
+  - file: path="{{ solr_dir }}" state="directory"
+    when: (not solr_dir_check.stat.exists)
+
+  - file: path="{{ solr_dir }}" state="directory" owner="{{ solr_user }}" group="{{ solr_group }}" mode="0774" #unarchive doesnt always set all folder permissions so do again here
