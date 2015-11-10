@@ -13,7 +13,7 @@ start () {
     echo -n "Starting solr..."
 
     # Start daemon
-    daemon --user="{{ solr_user }}:{{ solr_group }}" --chdir="{{ solr_dir }}" --umask="0774" --respawn --output="{{ solr_logs }}/out.log" --name=solr --verbose --command="java -jar start.jar -Xmx1560m -Xms1560m -Xss4m -XX:PermSize=24m -Dsolr.solr.home={{ solr_dir }}/Solr/cores -Dcatalina.logs={{ solr_logs }}"
+    daemon --user="{{ solr_user }}:{{ solr_group }}" --chdir="{{ solr_dir }}" --umask="0774" --respawn --output="{{ solr_logs }}/out.log" --name=solr --verbose --command="java -classpath '{{ solr_dir }}/Tomcat/bin/bootstrap.jar;{{ solr_dir }}/Tomcat/bin/tomcat-juli.jar' -Xmx1560m -Xms1560m -Xss4m -XX:PermSize=24m -Dcatalina.home='{{ solr_dir }}/Tomcat' -Dsolr.solr.home={{ solr_dir }}/Solr/cores -Dcatalina.logs={{ solr_logs }} -Djava.util.logging.config.file='{{ solr_dir }}/Tomcat/conf/logging.properties' -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs='{{ solr_dir }}/Tomcat/endorsed' --StartClass=org.apache.catalina.startup.Bootstrap --StartParams=start --StopClass=org.apache.catalina.startup.Bootstrap --StopParams=stop --LogPath={{ solr_logs }} --LogPrefix='commons-daemon'"
 
     RETVAL=$?
     if [ $RETVAL = 0 ]
