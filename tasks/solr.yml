@@ -28,4 +28,10 @@
   - file: path="{{ solr_dir }}" state="directory"
     when: (not solr_dir_check.stat.exists)
 
-  - file: path="{{ solr_dir }}" state="directory" owner="{{ solr_user }}" group="{{ solr_group }}" mode="0774" #unarchive doesnt always set all folder permissions so do again here
+  - file: path="{{ solr_dir }}" state="directory" owner="{{ solr_user }}" group="{{ solr_group }}" mode="0774"
+
+  - template: src="templates/solr.init.d.j2" dest="/etc/init.d/solr" owner="root" group="root" mode="0774"
+
+  - service: name="solr" enabled="yes"
+
+  - service: name="solr" state="start"

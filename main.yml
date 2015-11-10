@@ -1,11 +1,13 @@
 - name: deploy solr slave
   sudo: true
   hosts: solr-slaves
+  vars_files:
+    - defaults/main.yml
   tasks:
     - apt: update_cache="true" upgrade="dist"
     - include: tasks/java.yml
 
     - include: tasks/ufw.yml
-    
+
     - name: Autoremove unused packages
       command: apt-get -y autoremove
