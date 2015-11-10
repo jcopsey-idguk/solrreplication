@@ -15,7 +15,7 @@
 
   - apt: name="subversion" state="absent"
 
-  - file: path="{{ solr_dir }}" state="directory" owner="{{ solr_user }}" group="{{ solr_group }}" mode="0774"
+  - file: path="{{ solr_dir }}" state="directory" owner="{{ solr_user }}" group="{{ solr_group }}" mode="0774" recurse="true"
 
   - apt: name="daemon"
 
