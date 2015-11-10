@@ -4,7 +4,7 @@ start () {
     echo -n "Starting solr..."
 
     # Start daemon
-    daemon --user="{{ solr_user }}:{{ solr_group }}" --chdir="{{ solr_dir }}" --umask="0774" --respawn --output="{{ solr_logs }}/out.log" --name=solr --verbose --command="java -verbose -classpath {{ solr_dir }}/Tomcat/bin/bootstrap.jar:{{ solr_dir }}/Tomcat/bin/tomcat-juli.jar -Xmx1560m -Xms1560m -Xss4m -XX:PermSize=24m -Dcatalina.home=\"{{ solr_dir }}/Tomcat\" -Dsolr.solr.home={{ solr_dir }}/Solr/cores -Dcatalina.logs={{ solr_logs }} -Djava.util.logging.config.file=\"{{ solr_dir }}/Tomcat/conf/logging.properties\" -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=\"{{ solr_dir }}/Tomcat/endorsed\" org.apache.catalina.startup.Bootstrap"
+    daemon --user="{{ solr_user }}:{{ solr_group }}" --chdir="{{ solr_dir }}" --umask="0774" --respawn --errlog="{{ solr_logs }}/daemon_err.log" --stdout="{{ solr_logs }}/out.log" --stderr="{{ solr_logs }}/err.log" --name=solr --verbose --command="java -verbose -classpath {{ solr_dir }}/Tomcat/bin/bootstrap.jar:{{ solr_dir }}/Tomcat/bin/tomcat-juli.jar -Xmx1560m -Xms1560m -Xss4m -XX:PermSize=24m -Dcatalina.home=\"{{ solr_dir }}/Tomcat\" -Dsolr.solr.home={{ solr_dir }}/Solr/cores -Dcatalina.logs={{ solr_logs }} -Djava.util.logging.config.file=\"{{ solr_dir }}/Tomcat/conf/logging.properties\" -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=\"{{ solr_dir }}/Tomcat/endorsed\" org.apache.catalina.startup.Bootstrap"
 
     RETVAL=$?
     if [ $RETVAL = 0 ]
