@@ -1,8 +1,29 @@
+- name: deploy solr master
+  sudo: true
+  hosts: solr-master
+  vars_files:
+    - defaults/svn.yml
+    - defaults/main.yml
+    - defaults/firewall.yml
+    - defaults/solr-master.yml
+  tasks:
+    - apt: update_cache="true" upgrade="dist"
+
+    - include: tasks/java.yml
+    - include: tasks/ufw.yml
+    - include: tasks/solr.yml
+
+    - name: Autoremove unused packages
+      command: apt-get -y autoremove
+
 - name: deploy solr slave
   sudo: true
   hosts: solr-slaves
   vars_files:
+    - defaults/svn.yml
     - defaults/main.yml
+    - defaults/firewall.yml
+    - defaults/solr-slave.yml
   tasks:
     - apt: update_cache="true" upgrade="dist"
 

@@ -3,7 +3,8 @@
 
   - ufw: rule="allow" name="OpenSSH"
 
-  - ufw: rule="allow" to_port="{{ solr_port }}" proto="tcp"
+  - ufw: rule="allow" to_port="{{ solr_port }}" proto="tcp" src="{{ item }}"
+    with_items: "{{ allowed_ips }}"
 
   - ufw: rule="allow" delete="true" #delete any rule allowing all
 

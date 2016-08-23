@@ -5,3 +5,4 @@ solr_user: "solr"
 solr_group: "solr"
 solr_port: 8985
 solr_logs: "/var/log/solr"
+solr_master_host: "192.168.88.4:8985"
